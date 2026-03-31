@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Галерея - Подорожі Україною</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .gallery-filters {
+        text-align: center;
+        margin: 40px 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .gallery-filters button {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .gallery-filters button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .gallery-filters button.active {
+        background: linear-gradient(135deg, #764ba2, #667eea);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        transform: scale(1.05);
+      }
+
+      .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+      }
+
+      .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.4s ease;
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+
+      .gallery-item:hover img {
+        transform: scale(1.1);
+      }
+
+      .gallery-item-title {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-weight: 600;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+      }
+
+      .gallery-item:hover .gallery-item-title {
+        transform: translateY(0);
+      }
+
+      /* Модальне вікно */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        position: relative;
+        margin: auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 1000px;
+        height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal img {
+        max-width: 100%;
+        max-height: 80vh;
+        border-radius: 10px;
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.2);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .modal-close:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: rotate(90deg);
+      }
+
+      .modal-prev,
+      .modal-next {
+        position: absolute;
+        top: 50%;
+        color: white;
+        font-size: 40px;
+        cursor: pointer;
+        user-select: none;
+        background: rgba(255, 255, 255, 0.2);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .modal-prev {
+        left: 20px;
+      }
+
+      .modal-next {
+        right: 20px;
+      }
+
+      .modal-prev:hover,
+      .modal-next:hover {
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(1.1);
+      }
+
+      .gallery-category-title {
+        text-align: center;
+        font-size: 1.8rem;
+        color: #667eea;
+        margin: 60px 0 30px;
+        font-weight: 700;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li><a href="routes.html">Маршрути</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="blog.html">Блог</a></li>
+        <li><a href="contact.html">Контакти</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <h1>📸 Галерея України - Краса в кожній кадрі</h1>
+      <p>
+        Оберіть регіон та переглядайте красиві фотографії найпрекрасніших місць
+        України. Клікніть на фото для перегляду в повному розмірі!
+      </p>
+    </header>
+
+    <section>
+      <div class="gallery-filters">
+        <button class="filter-btn active" data-filter="all">🖼️ Всі фото</button>
+        <button class="filter-btn" data-filter="kyiv">🏛️ Київ</button>
+        <button class="filter-btn" data-filter="lviv">🎭 Львів</button>
+        <button class="filter-btn" data-filter="carpathians">⛰️ Карпати</button>
+        <button class="filter-btn" data-filter="odesa">🌊 Одеса</button>
+        <button class="filter-btn" data-filter="kamyanets">🏰 Кам'янець</button>
+        <button class="filter-btn" data-filter="kharkiv">🏗️ Харків</button>
+        <button class="filter-btn" data-filter="yaremche">🎨 Яремче</button>
+      </div>
+
+      <!-- КИЇВ -->
+      <div class="gallery-category" data-category="kyiv">
+        <h2 class="gallery-category-title">🏛️ Київ - Серце України</h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('kyiv', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/2019-06-27_%D0%9A%D0%B8%D1%97%D0%B2%2C_%D0%9C%D0%B9%D0%B4%D0%B0%D0%BD_%D0%9D%D0%B5%D0%B7%D0%B0%D0%BB%D0%B5%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%96_%D0%B2%D0%B8%D0%B2%D1%87%D0%B0_1.jpg/600px"
+              alt="Майдан Незалежності"
+            />
+            <div class="gallery-item-title">Майдан Незалежності</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kyiv', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Sofiyska-katedrala-3.jpg/600px-Sofiyska-katedrala-3.jpg"
+              alt="Софійський собор"
+            />
+            <div class="gallery-item-title">Софійський собор</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kyiv', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kiev_Pecherskaya_Lavra_2013.jpg/600px-Kiev_Pecherskaya_Lavra_2013.jpg"
+              alt="Київо-Печерська Лавра"
+            />
+            <div class="gallery-item-title">Київо-Печерська Лавра</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kyiv', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Kiev_Mikhailovskyi_golden_monastery.jpg/600px-Kiev_Mikhailovskyi_golden_monastery.jpg"
+              alt="Золотий монастир"
+            />
+            <div class="gallery-item-title">Золотий монастир</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kyiv', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/AndriivskiChurch01.jpg/600px-AndriivskiChurch01.jpg"
+              alt="Андріївська церква"
+            />
+            <div class="gallery-item-title">Андріївська церква</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kyiv', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Kreschatik_street.jpg/600px-Kreschatik_street.jpg"
+              alt="Крещатик вулиця"
+            />
+            <div class="gallery-item-title">Крещатик - головна вулиця</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЛЬВІВ -->
+      <div class="gallery-category" data-category="lviv">
+        <h2 class="gallery-category-title">🎭 Львів - Перлина Заходу</h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('lviv', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Lviv_Ratusha_May_2015.jpg/600px-Lviv_Ratusha_May_2015.jpg"
+              alt="Ринкова площа"
+            />
+            <div class="gallery-item-title">Ринкова площа</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('lviv', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Lviv_Opera_House.jpg/600px-Lviv_Opera_House.jpg"
+              alt="Оперний театр"
+            />
+            <div class="gallery-item-title">Оперний театр Львова</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('lviv', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Lviv_Korniakt_Tower_2015.jpg/600px-Lviv_Korniakt_Tower_2015.jpg"
+              alt="Башта Корнякта"
+            />
+            <div class="gallery-item-title">Башта Корнякта</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('lviv', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Lviv_Latin_Cathedral.jpg/600px-Lviv_Latin_Cathedral.jpg"
+              alt="Латинський кафедральний собор"
+            />
+            <div class="gallery-item-title">Латинський кафедральний собор</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('lviv', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Lviv_cafes.jpg/600px-Lviv_cafes.jpg"
+              alt="Львівські кав'ярні"
+            />
+            <div class="gallery-item-title">Львівські кав'ярні</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('lviv', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lychakiv_Cemetery_Lviv.jpg/600px-Lychakiv_Cemetery_Lviv.jpg"
+              alt="Личаківське кладовище"
+            />
+            <div class="gallery-item-title">Личаківське кладовище</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- КАРПАТИ -->
+      <div class="gallery-category" data-category="carpathians">
+        <h2 class="gallery-category-title">⛰️ Карпати - Гори України</h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('carpathians', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Hoverla_2014.jpg/600px-Hoverla_2014.jpg"
+              alt="Говерла"
+            />
+            <div class="gallery-item-title">Говерла (2061 м)</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('carpathians', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg/600px-Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg"
+              alt="Яремче"
+            />
+            <div class="gallery-item-title">Яремче - гуцульський центр</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('carpathians', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Prut_waterfall.jpg/600px-Prut_waterfall.jpg"
+              alt="Водоспад Прут"
+            />
+            <div class="gallery-item-title">Водоспад Прут</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('carpathians', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Carpathian_Lakes.jpg/600px-Carpathian_Lakes.jpg"
+              alt="Гірські озера"
+            />
+            <div class="gallery-item-title">Озерецькі озера</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('carpathians', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Carpathian_Forest.jpg/600px-Carpathian_Forest.jpg"
+              alt="Букові ліси"
+            />
+            <div class="gallery-item-title">Букові ліси Карпат</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('carpathians', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Alpine_meadows.jpg/600px-Alpine_meadows.jpg"
+              alt="Альпійські луги"
+            />
+            <div class="gallery-item-title">Альпійські луги</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ОДЕСА -->
+      <div class="gallery-category" data-category="odesa">
+        <h2 class="gallery-category-title">🌊 Одеса - Перлина Чорного моря</h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('odesa', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Odessa_Opera_and_Ballet_Theater%2C_Ukraine%2C_photo_by_Egor_Ostapenko_2019.jpg/600px-Odessa_Opera_and_Ballet_Theater%2C_Ukraine%2C_photo_by_Egor_Ostapenko_2019.jpg"
+              alt="Оперний театр"
+            />
+            <div class="gallery-item-title">Оперний театр Одеси</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('odesa', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Potemkin_Stairs_2015.jpg/600px-Potemkin_Stairs_2015.jpg"
+              alt="Потьомкінські сходи"
+            />
+            <div class="gallery-item-title">Потьомкінські сходи</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('odesa', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Odesa_beach.jpg/600px-Odesa_beach.jpg"
+              alt="Пляж"
+            />
+            <div class="gallery-item-title">Пляжі Одеси</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('odesa', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Odesa_Primorsky_Boulevard.jpg/600px-Odesa_Primorsky_Boulevard.jpg"
+              alt="Приморський бульвар"
+            />
+            <div class="gallery-item-title">Приморський бульвар</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('odesa', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Odesa_Port.jpg/600px-Odesa_Port.jpg"
+              alt="Морський порт"
+            />
+            <div class="gallery-item-title">Морський порт</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('odesa', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Odesa_Cathedral.jpg/600px-Odesa_Cathedral.jpg"
+              alt="Кафедральний собор"
+            />
+            <div class="gallery-item-title">Кафедральний собор</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- КАМ'ЯНЕЦЬ-ПОДІЛЬСЬКИЙ -->
+      <div class="gallery-category" data-category="kamyanets">
+        <h2 class="gallery-category-title">
+          🏰 Кам'янець-Подільський - Історичний період
+        </h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('kamyanets', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Kamianets-Podilski_castle_1.jpg/600px-Kamianets-Podilski_castle_1.jpg"
+              alt="Замок Кам'янець"
+            />
+            <div class="gallery-item-title">Кам'янецький замок</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kamyanets', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Kamenets_Podolski_old_city.jpg/600px-Kamenets_Podolski_old_city.jpg"
+              alt="Старе місто"
+            />
+            <div class="gallery-item-title">Старе місто з мису</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kamyanets', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Smotrich_Canyon.jpg/600px-Smotrich_Canyon.jpg"
+              alt="Каньйон Смотрич"
+            />
+            <div class="gallery-item-title">Каньйон річки Смотрич</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kamyanets', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Armyan_church.jpg/600px-Armyan_church.jpg"
+              alt="Армянська церква"
+            />
+            <div class="gallery-item-title">Армянська церква</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kamyanets', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Kamenets_castle_night.jpg/600px-Kamenets_castle_night.jpg"
+              alt="Замок вночі"
+            />
+            <div class="gallery-item-title">Замок в нічному освітленні</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kamyanets', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Turk_pozovyy.jpg/600px-Turk_pozovyy.jpg"
+              alt="Від турецького дива"
+            />
+            <div class="gallery-item-title">Вид з турецького бувая</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ХАРКІВ -->
+      <div class="gallery-category" data-category="kharkiv">
+        <h2 class="gallery-category-title">
+          🏗️ Харків - Місто науки та культури
+        </h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('kharkiv', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Hark%C3%ADv_City_Center.jpg/600px-Hark%C3%ADv_City_Center.jpg"
+              alt="Центр Харкова"
+            />
+            <div class="gallery-item-title">Центр Харкова</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kharkiv', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kharkov_Square_of_Freedom.jpg/600px-Kharkov_Square_of_Freedom.jpg"
+              alt="Площа Свободи"
+            />
+            <div class="gallery-item-title">Площа Свободи</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kharkiv', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Assumption_Cathedral_Kharkiv.jpg/600px-Assumption_Cathedral_Kharkiv.jpg"
+              alt="Успенський собор"
+            />
+            <div class="gallery-item-title">Успенський собор</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kharkiv', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Derzhprom_Kharkiv.jpg/600px-Derzhprom_Kharkiv.jpg"
+              alt="Держпром"
+            />
+            <div class="gallery-item-title">Держпром - символ</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kharkiv', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Gorky_Park_Kharkiv.jpg/600px-Gorky_Park_Kharkiv.jpg"
+              alt="Парк Горького"
+            />
+            <div class="gallery-item-title">Парк Горького</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('kharkiv', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Shevchenko_monument.jpg/600px-Shevchenko_monument.jpg"
+              alt="Пам'ятник Шевченку"
+            />
+            <div class="gallery-item-title">Пам'ятник Шевченку</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЯРЕМЧЕ -->
+      <div class="gallery-category" data-category="yaremche">
+        <h2 class="gallery-category-title">🎨 Яремче - Гуцульський центр</h2>
+        <div class="gallery-container">
+          <div class="gallery-item" onclick="openModal('yaremche', 0)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg/600px-Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg"
+              alt="Яремче панорама"
+            />
+            <div class="gallery-item-title">Яремче панорама</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('yaremche', 1)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Yaremche_Waterfall.jpg/600px-Yaremche_Waterfall.jpg"
+              alt="Водоспад Вовчинець"
+            />
+            <div class="gallery-item-title">Водоспад Вовчинець</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('yaremche', 2)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Hutsul_crafts.jpg/600px-Hutsul_crafts.jpg"
+              alt="Гуцульські ремесла"
+            />
+            <div class="gallery-item-title">Гуцульські ремесла</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('yaremche', 3)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Prut_river.jpg/600px-Prut_river.jpg"
+              alt="Річка Прут"
+            />
+            <div class="gallery-item-title">Річка Прут</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('yaremche', 4)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Yaremche_carpentry.jpg/600px-Yaremche_carpentry.jpg"
+              alt="Гуцульське різьблення"
+            />
+            <div class="gallery-item-title">Гуцульське різьблення</div>
+          </div>
+          <div class="gallery-item" onclick="openModal('yaremche', 5)">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Carpathian_tradition.jpg/600px-Carpathian_tradition.jpg"
+              alt="Традиційна архітектура"
+            />
+            <div class="gallery-item-title">Традиційна архітектура</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- МОДАЛЬНЕ ВІКНО -->
+    <div
+      id="imageModal"
+      class="modal"
+      onclick="if (event.target === this) closeModal();"
+    >
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <span class="modal-prev" onclick="changeImage(-1)">&#10094;</span>
+      <div class="modal-content">
+        <img id="modalImage" src="" alt="Full size image" />
+      </div>
+      <span class="modal-next" onclick="changeImage(1)">&#10095;</span>
+    </div>
+
+    <footer>
+      <p>
+        &copy; 2026 Подорожі Україною. Всі права захищені.<br />
+        Гаряча лінія: +380951234567 | email: gallery@podoroz.ua
+      </p>
+    </footer>
+
+    <script>
+      let currentCategory = "all";
+      let currentImageIndex = 0;
+
+      const galleryImages = {
+        kyiv: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/2019-06-27_%D0%9A%D0%B8%D1%97%D0%B2%2C_%D0%9C%D0%B9%D0%B4%D0%B0%D0%BD_%D0%9D%D0%B5%D0%B7%D0%B0%D0%BB%D0%B5%D0%B6%D0%BD%D0%BE%D1%81%D1%82%D1%96_%D0%B2%D0%B8%D0%B2%D1%87%D0%B0_1.jpg/600px",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Sofiyska-katedrala-3.jpg/600px-Sofiyska-katedrala-3.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kiev_Pecherskaya_Lavra_2013.jpg/600px-Kiev_Pecherskaya_Lavra_2013.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Kiev_Mikhailovskyi_golden_monastery.jpg/600px-Kiev_Mikhailovskyi_golden_monastery.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/AndriivskiChurch01.jpg/600px-AndriivskiChurch01.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Kreschatik_street.jpg/600px-Kreschatik_street.jpg",
+        ],
+        lviv: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Lviv_Ratusha_May_2015.jpg/600px-Lviv_Ratusha_May_2015.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Lviv_Opera_House.jpg/600px-Lviv_Opera_House.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Lviv_Korniakt_Tower_2015.jpg/600px-Lviv_Korniakt_Tower_2015.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Lviv_Latin_Cathedral.jpg/600px-Lviv_Latin_Cathedral.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Lviv_cafes.jpg/600px-Lviv_cafes.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Lychakiv_Cemetery_Lviv.jpg/600px-Lychakiv_Cemetery_Lviv.jpg",
+        ],
+        carpathians: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Hoverla_2014.jpg/600px-Hoverla_2014.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg/600px-Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Prut_waterfall.jpg/600px-Prut_waterfall.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Carpathian_Lakes.jpg/600px-Carpathian_Lakes.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Carpathian_Forest.jpg/600px-Carpathian_Forest.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Alpine_meadows.jpg/600px-Alpine_meadows.jpg",
+        ],
+        odesa: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Odessa_Opera_and_Ballet_Theater%2C_Ukraine%2C_photo_by_Egor_Ostapenko_2019.jpg/600px-Odessa_Opera_and_Ballet_Theater%2C_Ukraine%2C_photo_by_Egor_Ostapenko_2019.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Potemkin_Stairs_2015.jpg/600px-Potemkin_Stairs_2015.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Odesa_beach.jpg/600px-Odesa_beach.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Odesa_Primorsky_Boulevard.jpg/600px-Odesa_Primorsky_Boulevard.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Odesa_Port.jpg/600px-Odesa_Port.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Odesa_Cathedral.jpg/600px-Odesa_Cathedral.jpg",
+        ],
+        kamyanets: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Kamianets-Podilski_castle_1.jpg/600px-Kamianets-Podilski_castle_1.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Kamenets_Podolski_old_city.jpg/600px-Kamenets_Podolski_old_city.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Smotrich_Canyon.jpg/600px-Smotrich_Canyon.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Armyan_church.jpg/600px-Armyan_church.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Kamenets_castle_night.jpg/600px-Kamenets_castle_night.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Turk_pozovyy.jpg/600px-Turk_pozovyy.jpg",
+        ],
+        kharkiv: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Hark%C3%ADv_City_Center.jpg/600px-Hark%C3%ADv_City_Center.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Kharkov_Square_of_Freedom.jpg/600px-Kharkov_Square_of_Freedom.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Assumption_Cathedral_Kharkiv.jpg/600px-Assumption_Cathedral_Kharkiv.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Derzhprom_Kharkiv.jpg/600px-Derzhprom_Kharkiv.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Gorky_Park_Kharkiv.jpg/600px-Gorky_Park_Kharkiv.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Shevchenko_monument.jpg/600px-Shevchenko_monument.jpg",
+        ],
+        yaremche: [
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg/600px-Yaremche%2C_Ivano-Frankivs%27k_Oblast%2C_Ukraine%2C_photo_8.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Yaremche_Waterfall.jpg/600px-Yaremche_Waterfall.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Hutsul_crafts.jpg/600px-Hutsul_crafts.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Prut_river.jpg/600px-Prut_river.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Yaremche_carpentry.jpg/600px-Yaremche_carpentry.jpg",
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Carpathian_tradition.jpg/600px-Carpathian_tradition.jpg",
+        ],
+      };
+
+      document.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document
+            .querySelectorAll(".filter-btn")
+            .forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          const filter = this.dataset.filter;
+          const categories = document.querySelectorAll(".gallery-category");
+
+          categories.forEach((cat) => {
+            if (filter === "all" || cat.dataset.category === filter) {
+              cat.classList.remove("hidden");
+            } else {
+              cat.classList.add("hidden");
+            }
+          });
+        });
+      });
+
+      function openModal(category, index) {
+        currentCategory = category;
+        currentImageIndex = index;
+        const images = galleryImages[category];
+        document.getElementById("modalImage").src = images[index];
+        document.getElementById("imageModal").style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+
+      function changeImage(n) {
+        const images = galleryImages[currentCategory];
+        currentImageIndex += n;
+
+        if (currentImageIndex >= images.length) {
+          currentImageIndex = 0;
+        }
+        if (currentImageIndex < 0) {
+          currentImageIndex = images.length - 1;
+        }
+
+        document.getElementById("modalImage").src = images[currentImageIndex];
+      }
+
+      // Закриття модалю при натисканні на Escape
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+        if (event.key === "ArrowLeft") {
+          changeImage(-1);
+        }
+        if (event.key === "ArrowRight") {
+          changeImage(1);
+        }
+      });
+    </script>
+  </body>
+</html>

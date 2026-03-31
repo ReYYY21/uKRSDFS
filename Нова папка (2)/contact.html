@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Контакти - Подорожі Україною</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emailjs-com/3.2.0/email.min.js"></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li><a href="routes.html">Маршрути</a></li>
+        <li><a href="gallery.html">Галерея</a></li>
+        <li><a href="blog.html">Блог</a></li>
+        <li><a href="contact.html">Контакти</a></li>
+      </ul>
+    </nav>
+    <header>
+      <h1>Зв'яжіться з нами</h1>
+      <p>
+        Ми з нетерпінням чекаємо на ваші повідомлення! Заповніть форму нижче,
+        щоб отримати більше інформації про наші тури, забронювати подорож або
+        поділитися своїм досвідом.
+      </p>
+    </header>
+
+    <section id="contact-form">
+      <p
+        style="
+          text-align: center;
+          font-size: 1.2rem;
+          margin-bottom: 40px;
+          color: #667eea;
+        "
+      >
+        Ваша зацікавленість туризмом в Україні - це те, що мотивує нас надавати
+        найкращі послуги. Напишіть нам, і ми відповідимо в найближчий час!
+      </p>
+      <form id="contactForm">
+        <label for="name">Ім'я:</label><br />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          size="30"
+          maxlength="50"
+          required
+        /><br /><br />
+
+        <label for="email">Email:</label><br />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          size="30"
+          required
+        /><br /><br />
+
+        <label for="password">Пароль (для реєстрації):</label><br />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          size="30"
+          maxlength="20"
+        /><br /><br />
+
+        <label for="message">Повідомлення:</label><br />
+        <textarea
+          id="message"
+          name="message"
+          rows="5"
+          cols="40"
+          wrap="virtual"
+          required
+        ></textarea
+        ><br /><br />
+
+        <h4>Виберіть мову спілкування:</h4>
+        <input type="radio" name="lang" value="українська" checked /> Українська
+        <br />
+        <input type="radio" name="lang" value="російська" /> Російська <br />
+        <input type="radio" name="lang" value="англійська" /> Англійська
+        <br /><br />
+
+        <h4>Виберіть ваші інтереси:</h4>
+        <input type="checkbox" name="interest" value="туризм" /> Туризм <br />
+        <input type="checkbox" name="interest" value="екскурсії" /> Екскурсії
+        <br />
+        <input type="checkbox" name="interest" value="активний відпочинок" />
+        Активний відпочинок <br /><br />
+
+        <label for="district">Виберіть область/місто:</label><br />
+        <select id="district" name="district">
+          <option value="">-- Виберіть область --</option>
+          <option value="kyiv">🏛️ Київ (місто)</option>
+          <option value="kyiv_oblast">Київська область</option>
+          <option value="kharkiv">Харківська область</option>
+          <option value="lviv">Львівська область</option>
+          <option value="odesa">Одеська область</option>
+          <option value="donetsk">Донецька область</option>
+          <option value="luhansk">Луганська область</option>
+          <option value="zaporizhzhia">Запорізька область</option>
+          <option value="dnipropetrovsk">Дніпропетровська область</option>
+          <option value="poltava">Полтавська область</option>
+          <option value="sumy">Сумська область</option>
+          <option value="chernihiv">Чернігівська область</option>
+          <option value="zhytomyr">Житомирська область</option>
+          <option value="rivne">Рівненська область</option>
+          <option value="volyn">Волинська область</option>
+          <option value="khmelnytsky">Хмельницька область</option>
+          <option value="ternopil">Тернопільська область</option>
+          <option value="ivano_frankivsk">Івано-Франківська область</option>
+          <option value="cherkasy">Черкаська область</option>
+          <option value="kirovohrad">Кіровоградська область</option>
+          <option value="mykolaiv">Миколаївська область</option>
+          <option value="kherson">Херсонська область</option>
+          <option value="vinnytsia">Вінницька область</option>
+          <option value="zakarpattia">Закарпатська область</option>
+          <option value="chernivtsi">Чернівецька область</option></select
+        ><br /><br />
+
+        <input type="submit" value="Відправити" />
+        <input type="reset" value="Очистити форму" />
+      </form>
+      <div id="response"></div>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 Подорожі Україною. Всі права захищені.</p>
+    </footer>
+  </body>
+</html>
